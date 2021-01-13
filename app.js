@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors');
 
 const globalErrorHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
@@ -9,6 +10,11 @@ const userRouter = require('./routes/userRoutes');
 const app = express();
 
 // Middlewares
+// Implement CORS
+app.use(cors());
+
+app.options('*', cors());
+
 app.use(express.json());
 app.use(morgan('dev'));
 
