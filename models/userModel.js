@@ -58,6 +58,11 @@ const userSchema = new mongoose.Schema({
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
 });
 
 // MIDDLEWARES
@@ -79,6 +84,12 @@ userSchema.pre('save', async function (next) {
   // Delete the password confirm field
   this.passwordConfirm = undefined;
 
+  next();
+});
+
+userSchema.pre(/^find/, function (next) {
+  // this points to the current querry
+  this.find({ active: { $ne: false } });
   next();
 });
 
