@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 const cors = require('cors');
 
 const globalErrorHandler = require('./controllers/errorController');
@@ -11,6 +12,14 @@ const userRouter = require('./routes/userRoutes');
 const app = express();
 
 // Global Middlewares
+
+// Set Security Headers
+app.use(helmet());
+
+// Development logging
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 
 const limiter = rateLimit({
   max: 100,
@@ -25,11 +34,8 @@ app.use(cors());
 
 app.options('*', cors());
 
-app.use(express.json());
-
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
+// Body Parser, reading data from body into req.body
+app.use(express.json({ limit: '10kb' }));
 
 // app.use((req, res, next) => {
 //   console.log(req.headers);
