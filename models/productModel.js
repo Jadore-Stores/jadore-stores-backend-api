@@ -7,6 +7,8 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: [true, 'product must have a name'],
     unique: true,
+    minlength: [10, 'Product description must be at least 20 charactes'],
+    maxlength: [50, 'Product description must not exceed 50 characters'],
     trim: true,
   },
   description: {
@@ -31,6 +33,15 @@ const productSchema = new mongoose.Schema({
   quantity: {
     type: Number,
     required: [true, 'product must have a quantity'],
+  },
+  size: {
+    type: String,
+    required: [true, 'Please specify size of product!'],
+    // enum: {
+    //   values: ['s', 'm', 'l', 'xl', 'xxl'],
+    //   message: ['Size of product is either s, m, l, xl, xxl'],
+    // },
+    trim: true,
   },
   images: [String],
   ratingsAverage: {
