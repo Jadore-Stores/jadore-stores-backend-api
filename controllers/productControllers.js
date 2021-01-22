@@ -70,6 +70,10 @@ exports.updateProduct = catchAsync(async (req, res, next) => {
     runValidators: true,
   });
 
+  if (!product) {
+    return next(new AppError('No product with that ID was found! 😰', 404));
+  }
+
   res.status(200).json({
     status: 'success',
     data: {
@@ -79,7 +83,11 @@ exports.updateProduct = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteProduct = catchAsync(async (req, res, next) => {
-  await Product.findByIdAndDelete(req.params.id, req.body);
+  const product = await Product.findByIdAndDelete(req.params.id, req.body);
+
+  if (!product) {
+    return next(new AppError('No product with that ID was found! 😰', 404));
+  }
 
   res.status(204).json({
     status: 'success',
