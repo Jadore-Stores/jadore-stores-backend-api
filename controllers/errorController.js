@@ -12,8 +12,8 @@ const handleDuplicateFieldDB = (err) => {
 };
 
 const handleValidationErrorDB = (err) => {
-  const error = Object.values(err.errors).map((el) => el.message);
-  const message = `Invalid input data. ${error.join('. ')}`;
+  const errors = Object.values(err.errors).map((el) => el.message);
+  const message = `Invalid input data. ${errors.join('. ')}`;
   return new AppError(message, 400);
 };
 
@@ -41,7 +41,6 @@ const sendErrorProd = (err, res) => {
     });
   } else {
     // Programming or unknown error: don't leak details
-
     // Log Error
     console.error('Error 💥:', err);
 
@@ -61,6 +60,7 @@ module.exports = (err, req, res, next) => {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
+    error.message = err.message;
 
     if (error.name === 'CastError') error = handleCastErrorDB(error);
     if (error.code === 11000) error = handleDuplicateFieldDB(error);

@@ -53,6 +53,11 @@ const productSchema = new mongoose.Schema({
     type: Number,
     default: 5.0,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+    select: false,
+  },
 });
 
 // MIDDLEWARES

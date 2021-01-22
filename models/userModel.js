@@ -63,6 +63,11 @@ const userSchema = new mongoose.Schema({
     default: true,
     select: false,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+    select: false,
+  },
 });
 
 // MIDDLEWARES
