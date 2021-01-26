@@ -21,6 +21,7 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: [true, 'product must have a price!'],
   },
+  priceDiscount: Number,
   category: {
     type: String,
     required: [true, 'product must have a category'],
@@ -43,15 +44,23 @@ const productSchema = new mongoose.Schema({
     // },
     trim: true,
   },
+  summary: {
+    type: String,
+    trim: true,
+    required: [true, 'Please specify a summary description for a product!'],
+  },
+  imageCover: {
+    type: String,
+    required: [true, 'A product must have a cover image!'],
+  },
   images: [String],
   ratingsAverage: {
     type: Number,
     default: 4.0,
   },
-  imageCover: String,
   ratingsQuantity: {
     type: Number,
-    default: 5.0,
+    default: 0,
   },
   createdAt: {
     type: Date,
