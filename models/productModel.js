@@ -44,11 +44,6 @@ const productSchema = new mongoose.Schema({
     // },
     trim: true,
   },
-  summary: {
-    type: String,
-    trim: true,
-    required: [true, 'Please specify a summary description for a product!'],
-  },
   imageCover: {
     type: String,
     required: [true, 'A product must have a cover image!'],
