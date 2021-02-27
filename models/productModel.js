@@ -1,70 +1,84 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 
-const productSchema = new mongoose.Schema({
-  slug: String,
-  name: {
-    type: String,
-    required: [true, 'product must have a name'],
-    unique: true,
-    minlength: [10, 'Product description must be at least 20 charactes'],
-    maxlength: [50, 'Product description must not exceed 50 characters'],
-    trim: true,
-  },
-  description: {
-    type: String,
-    required: [true, 'product must have a description!'],
-    minlength: [20, 'Product description must be at least 20 charactes'],
-    maxlength: [500, 'Product description must not exceed 500 characters'],
-  },
-  price: {
-    type: Number,
-    required: [true, 'product must have a price!'],
-  },
-  priceDiscount: Number,
-  category: {
-    type: String,
-    required: [true, 'product must have a category'],
-    enum: {
-      values: ['men', 'women', 'wrist-watches', 'accessories'],
-      message: ['Product must belong to a category'],
+const productSchema = new mongoose.Schema(
+  {
+    slug: String,
+    name: {
+      type: String,
+      required: [true, 'product must have a name'],
+      unique: true,
+      minlength: [10, 'Product description must be at least 20 charactes'],
+      maxlength: [50, 'Product description must not exceed 50 characters'],
+      trim: true,
     },
-    trim: true,
+    description: {
+      type: String,
+      required: [true, 'product must have a description!'],
+      minlength: [20, 'Product description must be at least 20 charactes'],
+      maxlength: [500, 'Product description must not exceed 500 characters'],
+    },
+    price: {
+      type: Number,
+      required: [true, 'product must have a price!'],
+    },
+    priceDiscount: Number,
+    category: {
+      type: String,
+      required: [true, 'product must have a category'],
+      enum: {
+        values: ['men', 'women', 'wrist-watches', 'accessories'],
+        message: ['Product must belong to a category'],
+      },
+      trim: true,
+    },
+    quantity: {
+      type: Number,
+      required: [true, 'product must have a quantity'],
+    },
+    size: {
+      type: String,
+      required: [true, 'Please specify size of product!'],
+      // enum: {
+      //   values: ['s', 'm', 'l', 'xl', 'xxl'],
+      //   message: ['Size of product is either s, m, l, xl, xxl'],
+      // },
+      trim: true,
+    },
+    imageCover: {
+      type: String,
+      required: [true, 'A product must have a cover image!'],
+    },
+    images: [String],
+    ratingsAverage: {
+      type: Number,
+      default: 4.0,
+    },
+    ratingsQuantity: {
+      type: Number,
+      default: 0,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now(),
+      select: false,
+    },
+    // reviews: [],
   },
-  quantity: {
-    type: Number,
-    required: [true, 'product must have a quantity'],
-  },
-  size: {
-    type: String,
-    required: [true, 'Please specify size of product!'],
-    // enum: {
-    //   values: ['s', 'm', 'l', 'xl', 'xxl'],
-    //   message: ['Size of product is either s, m, l, xl, xxl'],
-    // },
-    trim: true,
-  },
-  imageCover: {
-    type: String,
-    required: [true, 'A product must have a cover image!'],
-  },
-  images: [String],
-  ratingsAverage: {
-    type: Number,
-    default: 4.0,
-  },
-  ratingsQuantity: {
-    type: Number,
-    default: 0,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now(),
-    select: false,
-  },
-});
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
 
 // MIDDLEWARES
+
+// Virtual Populate
+productSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'product',
+  localField: '_id',
+});
 
 productSchema.pre('save', function (next) {
   this.slug = slugify(`${this.name}`, { lower: true });

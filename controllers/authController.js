@@ -123,6 +123,20 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    // roles ['admin', 'user']
+
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError('You do not have permission to perform this action', 403)
+      );
+    }
+
+    next();
+  };
+};
+
 // Only for rendered pages, no errors
 exports.isLoggedIn = catchAsync(async (req, res, next) => {
   if (req.cookies.jwt) {
@@ -151,20 +165,6 @@ exports.isLoggedIn = catchAsync(async (req, res, next) => {
   }
   next();
 });
-
-exports.restrictTo = (...roles) => {
-  return (req, res, next) => {
-    // roles ['admin', 'user']
-
-    if (!roles.includes(req.user.role)) {
-      return next(
-        new AppError('You do not have permission to perform this action', 403)
-      );
-    }
-
-    next();
-  };
-};
 
 exports.forgetPassword = catchAsync(async (req, res, next) => {
   // 1. Find user based on POSTed email
