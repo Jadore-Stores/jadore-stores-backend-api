@@ -18,6 +18,6 @@ router
 router
   .route('/:id')
   .get(productControllers.getProduct)
-  .patch(productControllers.updateProduct)
-  .delete(productControllers.deleteProduct);
+  .patch(authController.restrictTo('admin'), productControllers.updateProduct)
+  .delete(authController.restrictTo('admin'), productControllers.deleteProduct);
 module.exports = router;
