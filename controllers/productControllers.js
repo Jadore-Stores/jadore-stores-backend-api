@@ -2,6 +2,7 @@ const Product = require('../models/productModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
+const factory = require('./handlerFactory');
 
 exports.createProduct = catchAsync(async (req, res, next) => {
   const product = await Product.create(req.body);
@@ -73,15 +74,17 @@ exports.updateProduct = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteProduct = catchAsync(async (req, res, next) => {
-  const product = await Product.findByIdAndDelete(req.params.id, req.body);
+exports.deleteProduct = factory.deleteOne(Product);
 
-  if (!product) {
-    return next(new AppError('No product with that ID was found! 😰', 404));
-  }
+// exports.deleteProduct = catchAsync(async (req, res, next) => {
+//   const product = await Product.findByIdAndDelete(req.params.id, req.body);
 
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
-});
+//   if (!product) {
+//     return next(new AppError('No product with that ID was found! 😰', 404));
+//   }
+
+//   res.status(204).json({
+//     status: 'success',
+//     data: null,
+//   });
+// });
