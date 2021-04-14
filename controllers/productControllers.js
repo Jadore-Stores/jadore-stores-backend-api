@@ -2,21 +2,7 @@ const Product = require('../models/productModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
-
-exports.createProduct = catchAsync(async (req, res, next) => {
-  const product = await Product.create(req.body);
-
-  if (!product) {
-    return next(new AppError('Error creating a product, try again!', 400));
-  }
-
-  res.status(201).json({
-    status: 'success',
-    data: {
-      product,
-    },
-  });
-});
+const factory = require('./handlerFactory');
 
 exports.getAllProducts = catchAsync(async (req, res, next) => {
   // Execute the query
@@ -55,33 +41,6 @@ exports.getProduct = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updateProduct = catchAsync(async (req, res, next) => {
-  const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-
-  if (!product) {
-    return next(new AppError('No product with that ID was found! 😰', 404));
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      product,
-    },
-  });
-});
-
-exports.deleteProduct = catchAsync(async (req, res, next) => {
-  const product = await Product.findByIdAndDelete(req.params.id, req.body);
-
-  if (!product) {
-    return next(new AppError('No product with that ID was found! 😰', 404));
-  }
-
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
-});
+exports.createProduct = factory.createOne(Product);
+exports.updateProduct = factory.updateOne(Product);
+exports.deleteProduct = factory.deleteOne(Product);
