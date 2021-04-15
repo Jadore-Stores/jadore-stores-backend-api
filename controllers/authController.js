@@ -178,9 +178,11 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   // 3. Send it to user's email
-  const resetURL = `${req.protocol}://${req.get(
-    'host'
-  )}/api/v1/users/resetPassword/${resetToken}`;
+  const resetURL = `https://www.jadore.com.ng/reset-password/${resetToken}`;
+
+  // const resetURL = `${req.protocol}://${req.get(
+  //   'host'
+  // )}/api/v1/users/resetPassword/${resetToken}`;
 
   const message = `Forgot your password?? Please click on the link below to reset your password.\nIf you didn't forget your password, please ignore this email!\n\n${resetURL}`;
 
